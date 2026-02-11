@@ -32,21 +32,11 @@ jobs:
           VITE_FIREBASE_APP_ID: ${{ secrets.VITE_FIREBASE_APP_ID }}
 
       - name: Deploy to Firebase Hosting
-        uses: FirebaseExtended/action-hosting-deploy@v0
-        with:
-          repoToken: ${{ secrets.GITHUB_TOKEN }}
-          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-          channelId: live
-          projectId: wargamelongrun
-
-      - name: Write service account key
-        run: echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}' > /tmp/sa_key.json
+        run: npx firebase-tools deploy --only hosting --project wargamelongrun
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
 
       - name: Deploy Firestore Rules
         run: npx firebase-tools deploy --only firestore:rules --project wargamelongrun
         env:
-          GOOGLE_APPLICATION_CREDENTIALS: /tmp/sa_key.json
-
-      - name: Cleanup
-        if: always()
-        run: rm -f /tmp/sa_key.json
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
