@@ -316,7 +316,7 @@ export class MapRenderer {
         fill: 0x000000,
       });
       const symbol = new Text({
-        text: uType.name[0].toUpperCase(),
+        text: uType.name.charAt(0).toUpperCase(),
         style,
       });
       symbol.x = x + TILE_SIZE / 2 - symbol.width / 2;
@@ -430,8 +430,8 @@ export class MapRenderer {
     // Highlighted tiles (movement range, etc.)
     for (const key of this.highlightedTiles) {
       const [xStr, yStr] = key.split(',');
-      const x = parseInt(xStr);
-      const y = parseInt(yStr);
+      const x = parseInt(xStr ?? '0');
+      const y = parseInt(yStr ?? '0');
 
       const g = new Graphics();
       g.rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);

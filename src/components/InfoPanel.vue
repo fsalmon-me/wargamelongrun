@@ -43,7 +43,7 @@ const selectedUnitInfo = computed(() => {
   return {
     name: uType?.name || game.selectedUnit.typeId,
     category: uType?.category,
-    hp: game.selectedUnit.hp,
+    hp: game.selectedUnit.currentHp,
     maxHp: uType?.stats.hp || 100,
     attack: uType?.stats.attack || 0,
     defense: uType?.stats.defense || 0,
@@ -148,7 +148,7 @@ function getPlayerName(playerId: string): string {
           @click="u.ownerId === game.currentPlayer?.id && game.selectUnit(u)"
         >
           <span class="unit-name">{{ UNIT_TYPES[u.typeId]?.name || u.typeId }}</span>
-          <span class="unit-hp">{{ u.hp }}hp</span>
+          <span class="unit-hp">{{ u.currentHp }}hp</span>
         </div>
       </section>
 
@@ -157,7 +157,7 @@ function getPlayerName(playerId: string): string {
         <h3>Bâtiments ({{ tileBuildings.length }})</h3>
         <div v-for="b in tileBuildings" :key="b.id" class="building-row">
           <span>{{ BUILDING_TYPES[b.typeId]?.name || b.typeId }}</span>
-          <span class="build-progress" v-if="!b.isComplete">
+          <span class="build-progress" v-if="!b.isConstructed">
             ⏳ {{ b.turnsRemaining }} tours restants
           </span>
         </div>

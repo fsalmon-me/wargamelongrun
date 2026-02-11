@@ -167,6 +167,7 @@ export class CombatManager {
     // Each attacker fights a defender (round-robin)
     for (let i = 0; i < aliveAttackers.length; i++) {
       const attacker = aliveAttackers[i];
+      if (!attacker) continue;
       const defenderIndex = i % aliveDefenders.length;
       const defender = aliveDefenders[defenderIndex];
 

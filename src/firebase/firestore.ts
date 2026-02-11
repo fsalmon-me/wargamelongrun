@@ -69,8 +69,8 @@ export async function importMapTiles(mapId: string, tiles: Tile[], width: number
   for (const [key, chunkTiles] of chunks) {
     const [cxStr, cyStr] = key.split('_');
     const chunk: MapChunk = {
-      chunkX: parseInt(cxStr),
-      chunkY: parseInt(cyStr),
+      chunkX: parseInt(cxStr ?? '0'),
+      chunkY: parseInt(cyStr ?? '0'),
       tiles: chunkTiles,
     };
     batch.set(doc(db, 'maps', mapId, 'chunks', key), chunk as unknown as DocumentData);

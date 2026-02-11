@@ -25,22 +25,21 @@ const resources = computed(() => {
 });
 
 function isImportantResource(t: ResourceType): boolean {
-  return [ResourceType.Dricks, ResourceType.Food, ResourceType.Wood, ResourceType.Stone].includes(t);
+  return [ResourceType.Dricks, ResourceType.Grain, ResourceType.Wood, ResourceType.Stone].includes(t);
 }
 
 function getResourceIcon(t: ResourceType): string {
   const icons: Partial<Record<ResourceType, string>> = {
     [ResourceType.Dricks]: '💰',
-    [ResourceType.Food]: '🌾',
+    [ResourceType.Grain]: '🌾',
     [ResourceType.Wood]: '🪵',
     [ResourceType.Stone]: '🪨',
     [ResourceType.Iron]: '⛏️',
-    [ResourceType.Gold]: '🥇',
-    [ResourceType.Horses]: '🐴',
+    [ResourceType.Coal]: '�ite',
     [ResourceType.Fish]: '🐟',
     [ResourceType.Gems]: '💎',
-    [ResourceType.Fur]: '🧥',
-    [ResourceType.Herbs]: '🌿',
+    [ResourceType.Leather]: '🧥',
+    [ResourceType.Wool]: '🐑',
   };
   return icons[t] || '📦';
 }

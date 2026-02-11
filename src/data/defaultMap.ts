@@ -90,9 +90,9 @@ export function assignStartingTerritories(
 
     // Claim tiles in radius around starting position
     for (const tile of tiles) {
-      const dist = Math.max(Math.abs(tile.x - pos.x), Math.abs(tile.y - pos.y));
+      const dist = Math.max(Math.abs(tile.x - pos!.x), Math.abs(tile.y - pos!.y));
       if (dist <= radius && tile.terrain !== TerrainType.Sea) {
-        tile.ownerId = factionIds[i];
+        tile.ownerId = factionIds[i] ?? null;
       }
     }
   }

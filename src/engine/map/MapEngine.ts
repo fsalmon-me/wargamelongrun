@@ -46,8 +46,8 @@ export class TileGrid {
     ];
     const result: Tile[] = [];
     for (const [dx, dy] of dirs) {
-      const nx = x + dx;
-      const ny = y + dy;
+      const nx = x + (dx ?? 0);
+      const ny = y + (dy ?? 0);
       if (this.isInBounds(nx, ny)) {
         const t = this.getTile(nx, ny);
         if (t) result.push(t);
@@ -61,8 +61,8 @@ export class TileGrid {
     const dirs = [[0, -1], [0, 1], [-1, 0], [1, 0]];
     const result: Tile[] = [];
     for (const [dx, dy] of dirs) {
-      const nx = x + dx;
-      const ny = y + dy;
+      const nx = x + (dx ?? 0);
+      const ny = y + (dy ?? 0);
       if (this.isInBounds(nx, ny)) {
         const t = this.getTile(nx, ny);
         if (t) result.push(t);
@@ -115,8 +115,8 @@ export class TileGrid {
     for (const [key, tiles] of chunkMap) {
       const [cxStr, cyStr] = key.split('_');
       chunks.push({
-        chunkX: parseInt(cxStr),
-        chunkY: parseInt(cyStr),
+        chunkX: parseInt(cxStr ?? '0'),
+        chunkY: parseInt(cyStr ?? '0'),
         tiles,
       });
     }

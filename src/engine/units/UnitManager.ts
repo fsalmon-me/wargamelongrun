@@ -106,8 +106,8 @@ export class UnitManager {
     const filtered = new Map<string, number>();
     for (const [key, cost] of reachable) {
       const [xStr, yStr] = key.split(',');
-      const tx = parseInt(xStr);
-      const ty = parseInt(yStr);
+      const tx = parseInt(xStr ?? '0');
+      const ty = parseInt(yStr ?? '0');
 
       const unitsOnTile = allUnits.filter(u => u.isAlive && u.x === tx && u.y === ty && u.id !== unit.id);
 
@@ -169,7 +169,7 @@ export class UnitManager {
     if (selectedUnits.length === 0) return null;
 
     // All units must be at the same location
-    const { x, y } = selectedUnits[0];
+    const { x, y } = selectedUnits[0]!;
     if (!selectedUnits.every(u => u.x === x && u.y === y)) return null;
 
     const army: Army = {

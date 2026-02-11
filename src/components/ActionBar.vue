@@ -34,7 +34,7 @@ const buildableBuildings = computed(() => {
       id,
       name: bt.name,
       cost: bt.cost,
-      turns: bt.buildTime,
+      turns: bt.buildTurns,
     }));
 });
 
@@ -82,10 +82,10 @@ function previewProduction() {
     <div v-if="game.productionPreview" class="production-preview">
       <h4>Aperçu Production Mensuelle</h4>
       <div class="prod-entries">
-        <div v-for="entry in game.productionPreview.entries" :key="entry.source" class="prod-row">
+        <div v-for="entry in [...game.productionPreview.gains, ...game.productionPreview.losses]" :key="entry.sourceId" class="prod-row">
           <span>{{ entry.source }}</span>
-          <span :class="{ positive: entry.amount > 0, negative: entry.amount < 0 }">
-            {{ entry.amount > 0 ? '+' : '' }}{{ entry.amount }} {{ entry.resourceType }}
+          <span :class="{ positive: entry.amount > 0, negative: entry.isMalus }">
+            {{ entry.amount > 0 ? '+' : '' }}{{ entry.amount }} {{ entry.resource }}
           </span>
         </div>
       </div>

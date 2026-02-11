@@ -1,7 +1,7 @@
 // ─── Game Store ────────────────────────────────────────────────────────────
 // Main store for in-game state management
 import { defineStore } from 'pinia';
-import { ref, computed } from 'vue';
+import { ref, shallowRef, computed } from 'vue';
 import type {
   Game, Player, Tile, Army, Alliance,
   DiplomacyRelation, CombatLog, ChatMessage,
@@ -25,7 +25,7 @@ export const useGameStore = defineStore('game', () => {
   const game = ref<Game | null>(null);
   const players = ref<Player[]>([]);
   const currentPlayer = ref<Player | null>(null);
-  const grid = ref<TileGrid | null>(null);
+  const grid = shallowRef<TileGrid | null>(null);
   const units = ref<UnitInstance[]>([]);
   const buildings = ref<BuildingInstance[]>([]);
   const settlements = ref<SettlementInstance[]>([]);
@@ -135,6 +135,7 @@ export const useGameStore = defineStore('game', () => {
       for (let j = i + 1; j < players.value.length; j++) {
         const a = players.value[i];
         const b = players.value[j];
+        if (!a || !b) continue;
 
         // Check if in same alliance
         const sameAlliance = alliances.value.some(al =>
