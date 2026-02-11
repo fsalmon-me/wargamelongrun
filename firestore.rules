@@ -1,0 +1,110 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ─── Helper functions ──────────────────────────────────────
+    function isAuth() {
+      return request.auth != null;
+    }
+    function isOwner(ownerId) {
+      return isAuth() && request.auth.uid == ownerId;
+    }
+    function isPlayer(gameId) {
+      return isAuth() && exists(/databases/$(database)/documents/games/$(gameId)/players/$(request.auth.uid));
+    }
+
+    // ─── Maps ──────────────────────────────────────────────────
+    match /maps/{mapId} {
+      allow read: if isAuth();
+      allow create: if isAuth();
+      allow update, delete: if false; // maps are immutable once created
+
+      match /chunks/{chunkId} {
+        allow read: if isAuth();
+        allow create: if isAuth();
+        allow update, delete: if false;
+      }
+    }
+
+    // ─── Games ─────────────────────────────────────────────────
+    match /games/{gameId} {
+      allow read: if isAuth();
+      allow create: if isAuth();
+      allow update: if isPlayer(gameId);
+
+      // Players — only the player themselves can write their own doc
+      match /players/{playerId} {
+        allow read: if isAuth();
+        allow create: if isAuth() && request.auth.uid == playerId;
+        allow update: if isOwner(playerId);
+        allow delete: if false;
+      }
+
+      // Units — any player in the game can read, owner can write
+      match /units/{unitId} {
+        allow read: if isPlayer(gameId);
+        allow create: if isPlayer(gameId);
+        allow update: if isPlayer(gameId)
+          && resource.data.ownerId == request.auth.uid;
+        allow delete: if isPlayer(gameId);
+      }
+
+      // Buildings
+      match /buildings/{buildingId} {
+        allow read: if isPlayer(gameId);
+        allow create: if isPlayer(gameId);
+        allow update: if isPlayer(gameId);
+        allow delete: if false;
+      }
+
+      // Settlements
+      match /settlements/{settlementId} {
+        allow read: if isPlayer(gameId);
+        allow create: if isPlayer(gameId);
+        allow update: if isPlayer(gameId);
+        allow delete: if false;
+      }
+
+      // Armies — owner can manage
+      match /armies/{armyId} {
+        allow read: if isPlayer(gameId);
+        allow create: if isPlayer(gameId);
+        allow update: if isPlayer(gameId)
+          && resource.data.ownerId == request.auth.uid;
+        allow delete: if isPlayer(gameId)
+          && resource.data.ownerId == request.auth.uid;
+      }
+
+      // Alliances
+      match /alliances/{allianceId} {
+        allow read: if isPlayer(gameId);
+        allow create: if isPlayer(gameId);
+        allow update: if isPlayer(gameId);
+        allow delete: if false;
+      }
+
+      // Combat logs — read-only for players, system writes
+      match /combatLogs/{logId} {
+        allow read: if isPlayer(gameId);
+        allow create: if isPlayer(gameId);
+        allow update, delete: if false;
+      }
+
+      // Chat — players can read and send messages, no edit/delete
+      match /chat/{messageId} {
+        allow read: if isPlayer(gameId);
+        allow create: if isPlayer(gameId)
+          && request.resource.data.senderId == request.auth.uid;
+        allow update, delete: if false;
+      }
+
+      // Turn actions — players submit their own actions
+      match /actions/{actionId} {
+        allow read: if isPlayer(gameId);
+        allow create: if isPlayer(gameId)
+          && request.resource.data.playerId == request.auth.uid;
+        allow update, delete: if false;
+      }
+    }
+  }
+}
